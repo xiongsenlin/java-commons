@@ -141,7 +141,7 @@ public class MapDataFilter {
         private List<List<CriteriaItem>> criteria;
 
         public Criteria() {
-            this.criteria = new ArrayList<List<CriteriaItem>>();
+            this.criteria = new ArrayList<>();
         }
 
         public synchronized Criteria or() {

@@ -1,6 +1,5 @@
 package org.xsl.common.db;
 
-import org.apache.log4j.Logger;
 import org.xsl.common.json.JsonHelper;
 import org.xsl.common.model.Pair;
 import org.xsl.common.string.StringUtils;
@@ -16,8 +15,6 @@ import static org.xsl.common.model.Constants.*;
  * Created by xiongsenlin on 15/7/8.
  */
 public class MysqlHelper {
-    private static Logger logger = Logger.getLogger(ConnectionPool.class);
-
     private ConnectionPool connectionPool;
 
     public MysqlHelper(JsonHelper jsonHelper) {
@@ -64,17 +61,10 @@ public class MysqlHelper {
 
         try {
             return conn.prepareStatement(sql);
-
         } catch (SQLException e) {
-            try {
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (SQLException exp) {
-                logger.error("Close mysql connection error", exp);
-            }
-
             throw e;
+        } finally {
+            conn.close();
         }
     }
 
@@ -83,7 +73,7 @@ public class MysqlHelper {
      */
     public void setStmtParamByField(PreparedStatement stmt, SqlField field) throws SQLException {
         if (field == null) {
-            return ;
+            return;
         }
 
         String valueStr = field.fieldValueStr;
@@ -94,35 +84,31 @@ public class MysqlHelper {
             throw new RuntimeException("Invalid param field");
         }
 
-        try {
-            switch (valueType.toLowerCase()) {
-                case "int":
-                    stmt.setInt(paramIndex, Integer.valueOf(valueStr));
-                    break;
-                case "long":
-                    stmt.setLong(paramIndex, Long.valueOf(valueStr));
-                    break;
-                case "double":
-                    stmt.setDouble(paramIndex, Double.valueOf(valueStr));
-                    break;
-                case "float":
-                    stmt.setFloat(paramIndex, Float.valueOf(valueStr));
-                    break;
-                case "string":
-                    stmt.setString(paramIndex, valueStr);
-                    break;
-                case "timestamp":
-                    stmt.setTimestamp(paramIndex, Timestamp.valueOf(valueStr));
-                    break;
-                case "boolean":
-                    stmt.setBoolean(paramIndex, Boolean.valueOf(valueStr));
-                    break;
-                default:
-                    throw new RuntimeException("Could not recognize the type ["
-                            + valueType + "] when set PreparedStatement by field");
-            }
-        } catch (SQLException e) {
-            throw new SQLException("Set PreparedStatement by field error", e);
+        switch (valueType.toLowerCase()) {
+            case "int":
+                stmt.setInt(paramIndex, Integer.valueOf(valueStr));
+                break;
+            case "long":
+                stmt.setLong(paramIndex, Long.valueOf(valueStr));
+                break;
+            case "double":
+                stmt.setDouble(paramIndex, Double.valueOf(valueStr));
+                break;
+            case "float":
+                stmt.setFloat(paramIndex, Float.valueOf(valueStr));
+                break;
+            case "string":
+                stmt.setString(paramIndex, valueStr);
+                break;
+            case "timestamp":
+                stmt.setTimestamp(paramIndex, Timestamp.valueOf(valueStr));
+                break;
+            case "boolean":
+                stmt.setBoolean(paramIndex, Boolean.valueOf(valueStr));
+                break;
+            default:
+                throw new RuntimeException("Could not recognize " +
+                        "the type [" + valueType + "] when set PreparedStatement by field");
         }
     }
 
@@ -132,7 +118,7 @@ public class MysqlHelper {
      * @param sql  需要执行的查询语句
      * @return     返回的结果是一个list，每一条记录是一个map
      */
-    public List<Map<String, String>> query(String sql) {
+    public List<Map<String, String>> query(String sql) throws SQLException {
         Connection conn = this.connectionPool.getConn(false);
         if (conn == null) {
             throw new RuntimeException("Can not get connection from pool");
@@ -154,16 +140,10 @@ public class MysqlHelper {
                 result.add(dataItem);
             }
             return result;
-        }
-        catch (Exception e) {
-            logger.error("Execute query statement error", e);
-            throw new RuntimeException(e);
+        } catch (Exception e) {
+            throw e;
         } finally {
-            try {
-                conn.close();
-            } catch (SQLException e) {
-                logger.error("Close mysql connection error", e);
-            }
+            conn.close();
         }
     }
 
@@ -173,7 +153,7 @@ public class MysqlHelper {
      * @param sql
      * @return
      */
-    public List<List<Pair<String, String>>> queryInOrder(String sql) {
+    public List<List<Pair<String, String>>> queryInOrder(String sql) throws SQLException {
         Connection conn = this.connectionPool.getConn(false);
         if (conn == null) {
             throw new RuntimeException("Can not get connection from pool");
@@ -197,14 +177,9 @@ public class MysqlHelper {
             return result;
         }
         catch (Exception e) {
-            logger.error("Execute query statement error", e);
-            throw new RuntimeException(e);
+            throw e;
         } finally {
-            try {
-                conn.close();
-            } catch (SQLException e) {
-                logger.error("Close mysql connection error", e);
-            }
+            conn.close();
         }
     }
 
@@ -213,7 +188,7 @@ public class MysqlHelper {
      * @param sql
      * @return
      */
-    public List<Map<String, Object>> queryPrimitives(String sql) {
+    public List<Map<String, Object>> queryPrimitives(String sql) throws SQLException {
         Connection conn = this.connectionPool.getConn(false);
         if (conn == null) {
             throw new RuntimeException("Can not get connection from pool");
@@ -237,14 +212,9 @@ public class MysqlHelper {
             return result;
         }
         catch (Exception e) {
-            logger.error("Execute query statement error", e);
-            throw new RuntimeException(e);
+            throw e;
         } finally {
-            try {
-                conn.close();
-            } catch (SQLException e) {
-                logger.error("Close mysql connection error", e);
-            }
+            conn.close();
         }
     }
 
@@ -254,7 +224,7 @@ public class MysqlHelper {
      * @param sql
      * @return
      */
-    public String getOneData(String sql) {
+    public String getOneData(String sql) throws SQLException {
         Connection conn = this.connectionPool.getConn(false);
         if (conn == null) {
             throw new RuntimeException("Can not get connection from pool");
@@ -271,14 +241,9 @@ public class MysqlHelper {
                 return null;
             }
         } catch (Exception e) {
-            logger.error("Execute query statement error", e);
-            throw new RuntimeException(e);
+            throw e;
         } finally {
-            try {
-                conn.close();
-            } catch (SQLException e) {
-                logger.error("Close mysql connection error", e);
-            }
+            conn.close();
         }
     }
 
@@ -287,7 +252,7 @@ public class MysqlHelper {
      * @param sql
      * @return
      */
-    public boolean update(String sql) {
+    public boolean update(String sql) throws SQLException {
         Connection conn = this.connectionPool.getConn(false);
         if (conn == null) {
             throw new RuntimeException("Can not get connection from pool");
@@ -299,15 +264,10 @@ public class MysqlHelper {
             stmt.executeUpdate(sql);
             return true;
         }
-        catch (Exception e) {
-            logger.error("Execute update statement error", e);
-            throw new RuntimeException(e);
+        catch (SQLException e) {
+            throw e;
         } finally {
-            try {
-                conn.close();
-            } catch (SQLException e) {
-                logger.error("Close mysql connection error", e);
-            }
+            conn.close();
         }
     }
 
@@ -315,13 +275,14 @@ public class MysqlHelper {
      * 释放连接池占用的所有资源
      * @throws Exception
      */
-    public void close() {
-        try {
-            this.connectionPool.close();
-        } catch (Exception e) {
-            logger.error("Close connection pool error", e);
-            throw new RuntimeException(e);
-        }
+    public void close() throws Exception {
+        this.connectionPool.close();
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        super.finalize();
+        this.close();
     }
 
     private Map<String, String> getConfig(JsonHelper helper) {
