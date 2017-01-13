@@ -1,5 +1,6 @@
 package org.xsl.common.test.db;
 
+import org.jruby.RubyProcess;
 import org.junit.Test;
 import org.xsl.common.util.BytesUtil;
 
@@ -13,6 +14,18 @@ public class TestHbaseApi {
         TestHbaseModel testHbaseModel = new TestHbaseModel();
         byte [] rowKey = testHbaseModel.getRowKey();
         System.out.println(BytesUtil.getStringFromBytes(rowKey));
+    }
+
+    @Test
+    public void testGetPut() throws Exception {
+        TestHbaseModel testHbaseModel = new TestHbaseModel();
+        testHbaseModel.getPut();
+    }
+
+    @Test
+    public void testToString() {
+        TestHbaseModel testHbaseModel = new TestHbaseModel();
+        System.out.println(testHbaseModel.toString());
     }
 
 }

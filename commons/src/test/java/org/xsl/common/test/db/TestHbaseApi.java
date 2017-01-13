@@ -16,8 +16,15 @@ public class TestHbaseApi {
     }
 
     @Test
-    public void testGetPut() {
+    public void testGetPut() throws Exception {
+        TestHbaseModel testHbaseModel = new TestHbaseModel();
+        testHbaseModel.getPut();
+    }
 
+    @Test
+    public void testToString() {
+        TestHbaseModel testHbaseModel = new TestHbaseModel();
+        System.out.println(testHbaseModel.toString());
     }
 
 }
