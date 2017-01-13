@@ -1,4 +1,4 @@
-package org.xsl.common.db;
+package org.xsl.common.db.mysql;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import org.xsl.common.annotation.MysqlFieldAnnotation;

@@ -1,4 +1,4 @@
-package org.xsl.common.model;
+package org.xsl.common.config;
 
 /**
  * Created by xiongsenlin on 15/7/27.

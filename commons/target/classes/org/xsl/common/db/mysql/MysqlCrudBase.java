@@ -1,4 +1,4 @@
-package org.xsl.common.db;
+package org.xsl.common.db.mysql;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;

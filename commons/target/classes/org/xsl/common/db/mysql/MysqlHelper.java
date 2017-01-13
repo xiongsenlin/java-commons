@@ -1,12 +1,12 @@
-package org.xsl.common.db;
+package org.xsl.common.db.mysql;
 
 import org.xsl.common.json.JsonHelper;
-import org.xsl.common.model.Pair;
+import org.xsl.common.config.Pair;
 import org.xsl.common.string.StringUtils;
 import java.sql.*;
 import java.util.*;
 
-import static org.xsl.common.model.Constants.*;
+import static org.xsl.common.config.Constants.*;
 
 /**
  * 支持mysql常见的增删查改操作，数据库连接池对操作透明，如果确保对象不再使用的情况下，可以手动调用

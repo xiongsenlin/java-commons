@@ -1,4 +1,4 @@
-package org.xsl.common.db;
+package org.xsl.common.db.mysql;
 
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.log4j.Logger;
@@ -6,7 +6,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Map;
 
-import static org.xsl.common.model.Constants.*;
+import static org.xsl.common.config.Constants.*;
 
 /**
  * Created by xiongsenlin on 15/7/8.
